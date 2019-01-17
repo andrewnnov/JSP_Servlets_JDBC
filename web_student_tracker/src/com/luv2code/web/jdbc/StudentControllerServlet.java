@@ -47,7 +47,7 @@ public class StudentControllerServlet extends HttpServlet {
 		
 		try {
 			//read the "command" parameter
-			String theCommand = request.getParameter("comand");
+			String theCommand = request.getParameter("command");
 			
 			//if the command is missing, then default to listing students
 			
@@ -67,6 +67,10 @@ public class StudentControllerServlet extends HttpServlet {
 			case "LOAD":
 				loadStudent(request, response);
 				break;
+			case "UPDATE":
+				updateStudent(request, response);
+				break;
+				
 
 			default:
 				listStudents(request, response);				
@@ -80,21 +84,45 @@ public class StudentControllerServlet extends HttpServlet {
 			}
 
 
+	private void updateStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//read student info from form data
+		
+		int id = Integer.parseInt(request.getParameter("studentId"));
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String email = request.getParameter("email");
+		
+		//create a new student object
+		
+		Student theStudent = new Student(id, firstName, lastName, email);
+		
+		//perform update on database
+		
+		studentDbutil.updateStudent(theStudent);
+		
+		//send them back to the "list students page"
+		
+		listStudents(request, response);
+		
+	}
+
+
 	private void loadStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		//read student id from form data
-		
+		//read student id from form data		
 		String theStudentId = request.getParameter("studentId");
 		
 		
-		//get student from database(db util)
+		//get student from database(db util)		
+		Student theStudent = studentDbutil.getStudent(theStudentId);
 		
-		Student student = studentDbutil.getStudents(theStudentId);
 		//place student in the request attribute
-		
+		request.setAttribute("THE_STUDENT", theStudent);
 		
 		//send to jsp page: update-student-form.jsp
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/update-student-form.jsp");
 		
+		dispatcher.forward(request, response);
 		
 		
 	}
@@ -136,8 +164,7 @@ public class StudentControllerServlet extends HttpServlet {
 		//send to JSP page (view)
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/list_students.jsp");
-		dispatcher.forward(request, response);
-		
+		dispatcher.forward(request, response);		
 	}
 
 }

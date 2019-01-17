@@ -58,8 +58,8 @@ public class TestServlet extends HttpServlet {
 		//Step 5: Process the result set
 			
 			while(myRs.next()) {
-				String fn = myRs.getString("first_name");
-				out.println(fn);
+				String email = myRs.getString("email");
+				out.println(email);
 			}
 		}
 		catch (Exception exc) {

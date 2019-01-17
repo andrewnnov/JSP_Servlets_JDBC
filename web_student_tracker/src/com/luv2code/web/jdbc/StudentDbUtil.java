@@ -139,7 +139,7 @@ public class StudentDbUtil {
 	}
 
 
-	public Student getStudents(String theStudentId) throws Exception {
+	public Student getStudent(String theStudentId) throws Exception {
 		
 		Student theStudent = null;
 		
@@ -149,8 +149,7 @@ public class StudentDbUtil {
 		int studentId;
 		
 		try {
-			//convert student id to int
-			
+			//convert student id to int			
 			studentId = Integer.parseInt(theStudentId);
 			
 			//get connection to database	
@@ -166,26 +165,23 @@ public class StudentDbUtil {
 			
 			//set params
 			
-			myStmt.setInt(1, studentId);		
+			myStmt.setInt(1, studentId);			
 			
-			
-			//execute statment 
+			//execute statement 
 			
 			myRs = myStmt.executeQuery();
 			
-			//retrieve data from result set
+			//retrieve data from result set row
 			
 			if(myRs.next()) {
 				String firstName = myRs.getString("first_name");
 				String lastName = myRs.getString("last_name");
-				String email = myRs.getString("email");
-				
+				String email = myRs.getString("email");				
 				//use the studentId during construction
 				theStudent = new Student(studentId, firstName, lastName, email);
 			} else {
 				throw new Exception("Could not find student id: " + studentId);
-			}			
-			
+			}				
 			return theStudent;
 		}
 		finally {
@@ -195,4 +191,47 @@ public class StudentDbUtil {
 			
 		}		
 	}
+
+
+	public void updateStudent(Student theStudent) throws Exception {
+		
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		
+		try {
+			//get db connection
+			
+			myConn = dataSource.getConnection();
+			
+			
+			//create SQL update statement
+			
+			String sql = "update student "
+			             + "set first_name=?, last_name=?, email=? "
+			             + "where id=?";
+			
+			
+			//prepare statement			
+			
+		    myStmt = myConn.prepareStatement(sql);		
+			
+			//set params
+		    
+		    myStmt.setString(1, theStudent.getFirstName());
+		    myStmt.setString(2, theStudent.getLastName());
+		    myStmt.setString(3, theStudent.getEmail());
+			myStmt.setInt(4, theStudent.getId());
+			
+			//execute SQL statement
+			
+			myStmt.execute();
+			
+		}
+		finally {
+			//clean up JDBC obects
+			close(myConn, myStmt, null);
+		}		
+				
+	}
+	
 }
