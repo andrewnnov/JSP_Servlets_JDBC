@@ -21,7 +21,7 @@
           
           <form action="StudentControllerServlet" method="GET">
           
-          <input type="hidden" name="comand" value="ADD" />
+          <input type="hidden" name="command" value="ADD" />
           
           <table>
           
@@ -46,7 +46,7 @@
                  
                  <tr>
                      <td><label></label></td>
-                     <td><input type="submit" value="Save" /></td>
+                     <td><input type="submit" value="Save" class="save" /></td>
                  
                  </tr>
           

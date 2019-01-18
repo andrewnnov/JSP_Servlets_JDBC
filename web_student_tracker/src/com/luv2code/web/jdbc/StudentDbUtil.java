@@ -111,9 +111,9 @@ public class StudentDbUtil {
 			
 			//create sql for insert		
 			
-			String sql = "insert into student"
-					+ "(first_name, last_name, email)"
-					+ "values(?, ?, ?)";
+			String sql ="insert into student"
+			        +"(first_name, last_name, email) "
+					+"values(?, ?, ?)";
 			
 			myStmt = myConn.prepareStatement(sql);
 			 
@@ -128,13 +128,9 @@ public class StudentDbUtil {
 			
 		}
 		finally {
+			//clean up JDBC objects
 			close(myConn, myStmt, null);
-		}
-		
-		
-		
-		//clean up JDBC objects
-		
+		}	
 		
 	}
 
@@ -232,6 +228,45 @@ public class StudentDbUtil {
 			close(myConn, myStmt, null);
 		}		
 				
+	}
+
+
+	public void deleteStudent(String theStudentId) throws Exception {
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		
+		try {
+			//convert student id to int
+			
+			int studentId = Integer.parseInt(theStudentId);
+			
+			//get connection to database
+			myConn = dataSource.getConnection();
+			
+			//create sql to delete student
+			
+			String sql = "delete from student where id=?";
+			
+			//prepare statement
+			
+			myStmt = myConn.prepareStatement(sql);
+			
+			//set params
+			
+			myStmt.setInt(1, studentId);
+			
+			//execute sql statement
+			
+			myStmt.execute();
+		
+		}
+		finally {
+			
+			//clean up JDBC code
+			close(myConn, myStmt, null);
+			
+		}
+		
 	}
 	
 }
